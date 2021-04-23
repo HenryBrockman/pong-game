@@ -29,6 +29,8 @@ p2_score = 0
 y1 = (ceil(window_height/2)) - ceil(window_height/6)
 y2 = (ceil(window_height/2)) - ceil(window_height/6)
 
+player_height = ceil(window_height/6)
+
 # initilize movement booleans
 
 down1 = False
@@ -74,25 +76,25 @@ while running:
             if event.key == pygame.K_DOWN:
                 down2 = False
 
-    if up1:
+    if up1 and y1 > 0:
         y1 -= vel
         win.fill(black)
-    if down1:
+    if down1 and y1 < window_height - player_height:
         y1 += vel
         win.fill(black)
 
-    if up2:
+    if up2 and y2 > 0:
         y2 -= vel
         win.fill(black)
-    if down2:
+    if down2 and y2 < window_height - player_height:
         y2 += vel
         win.fill(black)
 
 
 
 
-    player1 = pygame.draw.rect(win, white, (20, y1, 10, ceil(window_height/6)))
-    player2 = pygame.draw.rect(win, white, (base - 35, y2, 10, ceil(window_height/6)))
+    player1 = pygame.draw.rect(win, white, (20, y1, 10, player_height))
+    player2 = pygame.draw.rect(win, white, (base - 35, y2, 10, player_height))
     
     text = font.render("PONG", False, white, None)
     win.blit(text, (window_width/2 - (text.get_rect().width / 2), 20))
