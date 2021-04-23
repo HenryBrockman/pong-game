@@ -7,7 +7,7 @@ base = 750
 window_width = base
 window_height = int(base * 0.8)
 
-vel = 20
+vel = 10
 
 # set window and style
 win = pygame.display.set_mode((window_width, window_height))
@@ -39,7 +39,7 @@ up2 = False
 
 running = True
 while running:
-    pygame.time.delay(100)
+    pygame.time.delay(50)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
