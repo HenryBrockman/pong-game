@@ -38,6 +38,43 @@ class Player:
     def move_down(self):
         self.playerY += self.vel
 
+class Score:
+    def __init__(self, win, color, font, score):
+        self.win = win
+        self.color = color
+        self.font = font
+        self.score = score
+        self.build()
+
+    def build(self):
+        self.text = font.render(str(self.score), False, white, None)
+    
+    def get_width(self):
+        return self.text.get_rect().width
+
+    def add_point(self):
+        self.score += 1
+
+# Functions
+
+def full_build():
+
+    win.fill(black)
+
+    player1.build()
+    player2.build()
+
+    ball.build()
+
+    player1_score.build()
+    win.blit(player1_score.text, (BASE//15 - player1_score.get_width(), 20))
+
+    player2_score.build()
+    win.blit(player2_score.text, ((BASE - BASE//15) - player2_score.get_width(), 20))
+    
+    text = font.render("PONG", False, white, None)
+    win.blit(text, (BASE/2 - (text.get_rect().width / 2), 20))
+
 # Code
 
 # Set constants
@@ -82,8 +119,12 @@ up2 = False
 
 ball = Ball(win, white, WINDOW_WIDTH//2, WINDOW_HEIGHT//2, 14)
 
-player1 = Player(win, white, 20, y1, 10, player_height)
-player2 = Player(win, white, BASE - 35, y2, 10, player_height)
+player1 = Player(win, white, 20, y1, 10, player_height, VEL)
+player2 = Player(win, white, BASE - 35, y2, 10, player_height, VEL)
+
+player1_score = Score(win, white, font, 0)
+player2_score = Score(win, white, font, 0)
+
 
 
 running = True
@@ -95,12 +136,9 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
-                p1_score += 1
-                win.fill(black)
+                player1_score.add_point()
             if event.key == pygame.K_2:
-                p2_score += 1
-                win.fill(black)
-
+                player2_score.add_point()
             if event.key == pygame.K_w:
                 up1 = True
             if event.key == pygame.K_s:
@@ -123,56 +161,18 @@ while running:
             if event.key == pygame.K_DOWN:
                 down2 = False
 
-    # if up1 and y1 > 0:
-    #     y1 -= VEL
-    #     win.fill(black)
-    # if down1 and y1 < WINDOW_HEIGHT - player_height:
-    #     y1 += VEL
-    #     win.fill(black)
-
-    # if up2 and y2 > 0:
-    #     y2 -= VEL
-    #     win.fill(black)
-    # if down2 and y2 < WINDOW_HEIGHT - player_height:
-    #     y2 += VEL
-    #     win.fill(black)
-
-    if up1 and y1 > 0:
+    if up1 and player1.playerY > 0:
         player1.move_up()
-    if down1 and y1 < WINDOW_HEIGHT - player_height:
+    if down1 and player1.playerY < WINDOW_HEIGHT - player_height:
         player1.move_down()
 
-    if up2 and y2 > 0:
+    if up2 and player2.playerY > 0:
         player2.move_up()
-    if down2 and y2 < WINDOW_HEIGHT - player_height:
+    if down2 and player2.playerY < WINDOW_HEIGHT - player_height:
         player2.move_down()
 
-
-    win.fill(black)
-
-    player1.build()
-    player2.build()
-
-    ball.build()
-
-    p1_score_text = font.render(str(p1_score), False, white, None)
-    win.blit(p1_score_text, (ceil(BASE/15) - (p1_score_text.get_rect().width), 20))
-
-    p2_score_text = font.render(str(p2_score), False, white, None)
-    win.blit(p2_score_text, ((BASE - (ceil(BASE/15))) - (p2_score_text.get_rect().width), 20))
-
-    # player1 = pygame.draw.rect(win, white, (20, y1, 10, player_height))
-    # player2 = pygame.draw.rect(win, white, (BASE - 35, y2, 10, player_height))
-    
-    # text = font.render("PONG", False, white, None)
-    # win.blit(text, (BASE/2 - (text.get_rect().width / 2), 20))
-
-    # p1_score_text = font.render(str(p1_score), False, white, None)
-    # win.blit(p1_score_text, (ceil(BASE/15) - (p1_score_text.get_rect().width), 20))
-
-    # p2_score_text = font.render(str(p2_score), False, white, None)
-    # win.blit(p2_score_text, ((BASE - (ceil(BASE/15))) - (p2_score_text.get_rect().width), 20))
+    full_build()
 
     pygame.display.update()
-
+    
 pygame.quit()
