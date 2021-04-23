@@ -1,16 +1,36 @@
+
+# Imports and Initilization
 import pygame
 from math import ceil, floor
 
 pygame.init()
 
-base = 750
-window_width = base
-window_height = int(base * 0.8)
+# Classes
+class Ball:
+    def __init__(self, win, color, ballX, ballY, radius):
+        self.win = win
+        self.color = color
+        self.ballX = ballX
+        self.ballY = ballY
+        self.radius = radius
+        self.show()
 
-vel = 10
+    def show(self):
+        pygame.draw.circle(self.win, self.color, (self.ballX, self.ballY), self.radius)
+
+
+# Code
+
+# Set constants
+
+BASE = 750
+WINDOW_WIDTH = BASE
+WINDOW_HEIGHT = int(BASE * 0.8)
+
+VEL = 10
 
 # set window and style
-win = pygame.display.set_mode((window_width, window_height))
+win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Pong!")
 
 # set colors
@@ -26,10 +46,10 @@ p2_score = 0
 
 # build rectangle
 
-y1 = (ceil(window_height/2)) - ceil(window_height/6)
-y2 = (ceil(window_height/2)) - ceil(window_height/6)
+y1 = (ceil(WINDOW_HEIGHT/2)) - ceil(WINDOW_HEIGHT/6)
+y2 = (ceil(WINDOW_HEIGHT/2)) - ceil(WINDOW_HEIGHT/6)
 
-player_height = ceil(window_height/6)
+player_height = ceil(WINDOW_HEIGHT/6)
 
 # initilize movement booleans
 
@@ -38,6 +58,10 @@ up1 = False
 
 down2 = False
 up2 = False
+
+# Objects
+
+ball = Ball(win, white, WINDOW_WIDTH//2, WINDOW_HEIGHT//2, 14)
 
 running = True
 while running:
@@ -77,33 +101,33 @@ while running:
                 down2 = False
 
     if up1 and y1 > 0:
-        y1 -= vel
+        y1 -= VEL
         win.fill(black)
-    if down1 and y1 < window_height - player_height:
-        y1 += vel
+    if down1 and y1 < WINDOW_HEIGHT - player_height:
+        y1 += VEL
         win.fill(black)
 
     if up2 and y2 > 0:
-        y2 -= vel
+        y2 -= VEL
         win.fill(black)
-    if down2 and y2 < window_height - player_height:
-        y2 += vel
+    if down2 and y2 < WINDOW_HEIGHT - player_height:
+        y2 += VEL
         win.fill(black)
 
 
 
 
     player1 = pygame.draw.rect(win, white, (20, y1, 10, player_height))
-    player2 = pygame.draw.rect(win, white, (base - 35, y2, 10, player_height))
+    player2 = pygame.draw.rect(win, white, (BASE - 35, y2, 10, player_height))
     
     text = font.render("PONG", False, white, None)
-    win.blit(text, (window_width/2 - (text.get_rect().width / 2), 20))
+    win.blit(text, (BASE/2 - (text.get_rect().width / 2), 20))
 
     p1_score_text = font.render(str(p1_score), False, white, None)
-    win.blit(p1_score_text, (ceil(base/15) - (p1_score_text.get_rect().width), 20))
+    win.blit(p1_score_text, (ceil(BASE/15) - (p1_score_text.get_rect().width), 20))
 
     p2_score_text = font.render(str(p2_score), False, white, None)
-    win.blit(p2_score_text, ((base - (ceil(base/15))) - (p2_score_text.get_rect().width), 20))
+    win.blit(p2_score_text, ((BASE - (ceil(BASE/15))) - (p2_score_text.get_rect().width), 20))
 
     pygame.display.update()
 
