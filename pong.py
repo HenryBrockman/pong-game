@@ -10,6 +10,8 @@ class Ball:
     def __init__(self, win, color, ballX, ballY, radius):
         self.win = win
         self.color = color
+        self.startPosX = ballX
+        self.startPosY = ballY
         self.ballX = ballX
         self.ballY = ballY
         self.radius = radius
@@ -19,6 +21,13 @@ class Ball:
 
     def build(self):
         pygame.draw.circle(self.win, self.color, (self.ballX, self.ballY), self.radius)
+
+    def reset(self):
+        self.ballX = self.startPosX
+        self.ballY = self.startPosY
+
+        self.dX = 0
+        self.dY = 0
 
     def start(self):
         self.dX = 15
@@ -33,6 +42,7 @@ class Ball:
 
     def side_deflect(self):
         self.dY = -self.dY
+
 class Player:
     def __init__(self, win, color, playerX, playerY, rectWidth, rectHeight, vel):
         self.win = win
@@ -64,13 +74,21 @@ class collision:
                 return True
         return False
 
-    def ball_side(self, ball, width, height):
+    def ball_side(self, ball, height):
         if ball.ballY - ball.radius <= 0:
             return True
 
         if ball.ballY - ball.radius >= height:
             return True
         return False
+    
+    def ball_goal1(self, ball, width):
+        if ball.ballX - ball.radius <= 0:
+            return True
+
+    def ball_goal2(self, ball, width):
+        if ball.ballX - ball.radius >= width:
+            return True
 class Score:
     def __init__(self, win, color, font, score):
         self.win = win
@@ -162,7 +180,7 @@ while running:
             pygame.quit()
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
+            if event.key == pygame.K_SPACE:
                 ball.start()
             if event.key == pygame.K_1:
                 player1_score.add_point()
@@ -207,8 +225,15 @@ while running:
     if ball_col.ball_player2(ball, player2):
         ball.player_deflect()
 
-    if ball_col.ball_side(ball, WINDOW_WIDTH, WINDOW_HEIGHT):
+    if ball_col.ball_side(ball, WINDOW_HEIGHT):
         ball.side_deflect()
+
+    if ball_col.ball_goal1(ball, WINDOW_WIDTH):
+        ball.reset()
+        player2_score.add_point()
+    if ball_col.ball_goal2(ball, WINDOW_WIDTH):
+        ball.reset()
+        player1_score.add_point()
 
     full_build()
 
