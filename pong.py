@@ -29,12 +29,10 @@ class Ball:
         self.ballY += self.dY
 
     def player_deflect(self):
-        self.posX = -self.posX
+        self.dX = -self.dX
 
-    def wall_deflect(self):
-        self.posY = -self.posY
-
-
+    def side_deflect(self):
+        self.dY = -self.dY
 class Player:
     def __init__(self, win, color, playerX, playerY, rectWidth, rectHeight, vel):
         self.win = win
@@ -54,7 +52,6 @@ class Player:
 
     def move_down(self):
         self.playerY += self.vel
-
 class collision:
     def ball_player1(self, ball, player1):
         if ball.ballY + ball.radius > player1.playerY and ball.ballY - ball.radius < player1.playerY + player1.rectHeight:
@@ -67,16 +64,13 @@ class collision:
                 return True
         return False
 
-    def ball_top_bottom(self, ball, height, width):
+    def ball_side(self, ball, width, height):
         if ball.ballY - ball.radius <= 0:
             return True
 
         if ball.ballY - ball.radius >= height:
             return True
         return False
-
-    def player_walls(self, player):
-        pass
 class Score:
     def __init__(self, win, color, font, score):
         self.win = win
@@ -157,8 +151,9 @@ player2 = Player(win, white, BASE - 35, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/
 player1_score = Score(win, white, font, 0)
 player2_score = Score(win, white, font, 0)
 
+ball_col = collision()
 
-
+playing = False
 running = True
 while running:
     pygame.time.delay(50)
@@ -167,6 +162,8 @@ while running:
             pygame.quit()
             running = False
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                ball.start()
             if event.key == pygame.K_1:
                 player1_score.add_point()
             if event.key == pygame.K_2:
@@ -193,15 +190,25 @@ while running:
             if event.key == pygame.K_DOWN:
                 down2 = False
 
-    if up1 and player1.playerY > 0:
+    ball.move()
+
+    if up1 and player1.playerY >= 0:
         player1.move_up()
-    if down1 and player1.playerY < WINDOW_HEIGHT - player1.rectHeight:
+    if down1 and player1.playerY <= WINDOW_HEIGHT - player1.rectHeight:
         player1.move_down()
 
-    if up2 and player2.playerY > 0:
+    if up2 and player2.playerY >= 0:
         player2.move_up()
-    if down2 and player2.playerY < WINDOW_HEIGHT - player2.rectHeight:
+    if down2 and player2.playerY <= WINDOW_HEIGHT - player2.rectHeight:
         player2.move_down()
+
+    if ball_col.ball_player1(ball, player1):
+        ball.player_deflect()
+    if ball_col.ball_player2(ball, player2):
+        ball.player_deflect()
+
+    if ball_col.ball_side(ball, WINDOW_WIDTH, WINDOW_HEIGHT):
+        ball.side_deflect()
 
     full_build()
 
