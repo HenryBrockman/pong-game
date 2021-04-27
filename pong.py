@@ -2,6 +2,7 @@
 # Imports and Initilization
 import pygame
 from math import ceil, floor
+import random
 
 pygame.init()
 
@@ -30,8 +31,14 @@ class Ball:
         self.dY = 0
 
     def start(self):
-        self.dX = 15
-        self.dY = 5
+        num1 = 15
+        num2 = random.randint(1, 5)
+        if random.choice([True, False]):
+            num1 = -num1
+        if random.choice([True, False]):
+            num2 = -num2
+        self.dX = num1
+        self.dY = num2
 
     def move(self):
         self.ballX += self.dX
