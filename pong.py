@@ -13,10 +13,27 @@ class Ball:
         self.ballX = ballX
         self.ballY = ballY
         self.radius = radius
+        self.dX = 0
+        self.dY = 0
         self.build()
 
     def build(self):
         pygame.draw.circle(self.win, self.color, (self.ballX, self.ballY), self.radius)
+
+    def start(self):
+        self.dX = 15
+        self.dY = 5
+
+    def move(self):
+        self.ballX += self.dX
+        self.ballY += self.dY
+
+    def player_deflect(self):
+        self.posX = -self.posX
+
+    def wall_deflect(self):
+        self.posY = -self.posY
+
 
 class Player:
     def __init__(self, win, color, playerX, playerY, rectWidth, rectHeight, vel):
@@ -38,6 +55,28 @@ class Player:
     def move_down(self):
         self.playerY += self.vel
 
+class collision:
+    def ball_player1(self, ball, player1):
+        if ball.ballY + ball.radius > player1.playerY and ball.ballY - ball.radius < player1.playerY + player1.rectHeight:
+            if ball.ballX - ball.radius <= player1.playerX + player1.rectWidth:
+                return True
+        return False
+    def ball_player2(self, ball, player2):
+        if ball.ballY + ball.radius > player2.playerY and ball.ballY - ball.radius < player2.playerY + player2.rectHeight:
+            if ball.ballX + ball.radius >= player2.playerX:
+                return True
+        return False
+
+    def ball_top_bottom(self, ball, height, width):
+        if ball.ballY - ball.radius <= 0:
+            return True
+
+        if ball.ballY - ball.radius >= height:
+            return True
+        return False
+
+    def player_walls(self, player):
+        pass
 class Score:
     def __init__(self, win, color, font, score):
         self.win = win
@@ -100,13 +139,6 @@ font = pygame.font.SysFont('Bit5x5.tff', 32)
 p1_score = 0
 p2_score = 0
 
-# build rectangle
-
-y1 = (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2
-y2 = (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2
-
-player_height = ceil(WINDOW_HEIGHT/6)
-
 # initilize Booleans
 
 down1 = False
@@ -119,8 +151,8 @@ up2 = False
 
 ball = Ball(win, white, WINDOW_WIDTH//2, WINDOW_HEIGHT//2, 14)
 
-player1 = Player(win, white, 20, y1, 10, player_height, VEL)
-player2 = Player(win, white, BASE - 35, y2, 10, player_height, VEL)
+player1 = Player(win, white, 20, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2, 10, WINDOW_HEIGHT//6, VEL)
+player2 = Player(win, white, BASE - 35, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2, 10, WINDOW_HEIGHT//6, VEL)
 
 player1_score = Score(win, white, font, 0)
 player2_score = Score(win, white, font, 0)
@@ -163,16 +195,16 @@ while running:
 
     if up1 and player1.playerY > 0:
         player1.move_up()
-    if down1 and player1.playerY < WINDOW_HEIGHT - player_height:
+    if down1 and player1.playerY < WINDOW_HEIGHT - player1.rectHeight:
         player1.move_down()
 
     if up2 and player2.playerY > 0:
         player2.move_up()
-    if down2 and player2.playerY < WINDOW_HEIGHT - player_height:
+    if down2 and player2.playerY < WINDOW_HEIGHT - player2.rectHeight:
         player2.move_down()
 
     full_build()
 
     pygame.display.update()
-    
+
 pygame.quit()
