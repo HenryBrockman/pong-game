@@ -85,7 +85,7 @@ class collision:
         if ball.ballY - ball.radius <= 0:
             return True
 
-        if ball.ballY - ball.radius >= height:
+        if ball.ballY + ball.radius >= height:
             return True
         return False
     
@@ -188,7 +188,9 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                ball.start()
+                if not playing:
+                    ball.start()
+                    playing = True
             if event.key == pygame.K_1:
                 player1_score.add_point()
             if event.key == pygame.K_2:
@@ -238,9 +240,11 @@ while running:
     if ball_col.ball_goal1(ball, WINDOW_WIDTH):
         ball.reset()
         player2_score.add_point()
+        playing = False
     if ball_col.ball_goal2(ball, WINDOW_WIDTH):
         ball.reset()
         player1_score.add_point()
+        playing = False
 
     full_build()
 
