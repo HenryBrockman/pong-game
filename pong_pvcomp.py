@@ -75,9 +75,9 @@ class collision:
             if ball.ballX - ball.radius <= player1.playerX + player1.rectWidth:
                 return True
         return False
-    def ball_player2(self, ball, player2):
-        if ball.ballY + ball.radius > player2.playerY and ball.ballY - ball.radius < player2.playerY + player2.rectHeight:
-            if ball.ballX + ball.radius >= player2.playerX:
+    def ball_playercomp(self, ball, playercomp):
+        if ball.ballY + ball.radius > playercomp.playerY and ball.ballY - ball.radius < playercomp.playerY + playercomp.rectHeight:
+            if ball.ballX + ball.radius >= playercomp.playerX:
                 return True
         return False
 
@@ -120,15 +120,15 @@ def full_build():
     win.fill(black)
 
     player1.build()
-    player2.build()
+    playercomp.build()
 
     ball.build()
 
     player1_score.build()
     win.blit(player1_score.text, (BASE//15 - player1_score.get_width(), 20))
 
-    player2_score.build()
-    win.blit(player2_score.text, ((BASE - BASE//15) - player2_score.get_width(), 20))
+    playercomp_score.build()
+    win.blit(playercomp_score.text, ((BASE - BASE//15) - playercomp_score.get_width(), 20))
     
     text = font.render("PONG", False, white, None)
     win.blit(text, (BASE/2 - (text.get_rect().width / 2), 20))
@@ -163,18 +163,15 @@ p2_score = 0
 down1 = False
 up1 = False
 
-down2 = False
-up2 = False
-
 # Initilize Objects
 
 ball = Ball(win, white, WINDOW_WIDTH//2, WINDOW_HEIGHT//2, 14)
 
 player1 = Player(win, white, 20, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2, 10, WINDOW_HEIGHT//6, VEL)
-player2 = Player(win, white, BASE - 35, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2, 10, WINDOW_HEIGHT//6, VEL)
+playercomp = Player(win, white, BASE - 35, (WINDOW_HEIGHT//2) - (WINDOW_HEIGHT//6)/2, 10, WINDOW_HEIGHT//6, VEL)
 
 player1_score = Score(win, white, font, 0)
-player2_score = Score(win, white, font, 0)
+playercomp_score = Score(win, white, font, 0)
 
 ball_col = collision()
 
@@ -194,7 +191,7 @@ while running:
             if event.key == pygame.K_1:
                 player1_score.add_point()
             if event.key == pygame.K_2:
-                player2_score.add_point()
+                playercomp_score.add_point()
             if event.key == pygame.K_w:
                 up1 = True
             if event.key == pygame.K_s:
@@ -212,26 +209,24 @@ while running:
             if event.key == pygame.K_s:
                 down1 = False
 
-            if event.key == pygame.K_UP:
-                up2 = False
-            if event.key == pygame.K_DOWN:
-                down2 = False
-
     ball.move()
+
+    
+    if ball.ballY < playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY >= 0:
+        playercomp.move_up()
+    if ball.ballY > playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY <= WINDOW_HEIGHT - playercomp.rectHeight:
+        playercomp.move_down()
 
     if up1 and player1.playerY >= 0:
         player1.move_up()
     if down1 and player1.playerY <= WINDOW_HEIGHT - player1.rectHeight:
         player1.move_down()
 
-    if up2 and player2.playerY >= 0:
-        player2.move_up()
-    if down2 and player2.playerY <= WINDOW_HEIGHT - player2.rectHeight:
-        player2.move_down()
+
 
     if ball_col.ball_player1(ball, player1):
         ball.player_deflect()
-    if ball_col.ball_player2(ball, player2):
+    if ball_col.ball_playercomp(ball, playercomp):
         ball.player_deflect()
 
     if ball_col.ball_side(ball, WINDOW_HEIGHT):
@@ -239,7 +234,7 @@ while running:
 
     if ball_col.ball_goal1(ball, WINDOW_WIDTH):
         ball.reset()
-        player2_score.add_point()
+        playercomp_score.add_point()
         playing = False
     if ball_col.ball_goal2(ball, WINDOW_WIDTH):
         ball.reset()
