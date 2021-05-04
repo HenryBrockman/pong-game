@@ -1,4 +1,3 @@
-# 16
 # Imports and Initilization
 import pygame
 from math import ceil, floor
