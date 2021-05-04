@@ -32,11 +32,9 @@ class Ball:
 
     def start(self):
         num1 = 15
-        num2 = random.randint(1, 5)
+        num2 = random.randint(-12, 12)
         if random.choice([True, False]):
             num1 = -num1
-        if random.choice([True, False]):
-            num2 = -num2
         self.dX = num1
         self.dY = num2
 
@@ -211,11 +209,11 @@ while running:
 
     ball.move()
 
-    
-    if ball.ballY < playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY >= 0:
-        playercomp.move_up()
-    if ball.ballY > playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY <= WINDOW_HEIGHT - playercomp.rectHeight:
-        playercomp.move_down()
+    if random.randint(0, 3):
+        if ball.ballY < playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY >= 0:
+            playercomp.move_up()
+        if ball.ballY > playercomp.playerY + (playercomp.rectHeight//2) and playercomp.playerY <= WINDOW_HEIGHT - playercomp.rectHeight:
+            playercomp.move_down()
 
     if up1 and player1.playerY >= 0:
         player1.move_up()
